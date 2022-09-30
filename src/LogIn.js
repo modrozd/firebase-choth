@@ -2,6 +2,9 @@ import React, { useContext } from "react";
 import { Navigate } from "react-router-dom";
 import { AuthContext } from "./Auth";
 import firebaseConfig from "./firebase.js";
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import Grid from "@material-ui/core/Grid";
 
 const LogIn = () => {
   const handleSubmit = (e) => {
@@ -19,13 +22,19 @@ const LogIn = () => {
   }
   return (
     <>
-      <h1>Log In</h1>
+      <h1>LOG IN PAGE</h1>
       <form onSubmit={handleSubmit}>
-        <label for="email">Email</label>
-        <input type="email" name="email" placeholder="Email" />
-        <label for="password">Password</label>
-        <input type="password" name="password" placeholder="Password" />
-        <button type="submit">Submit</button>
+        <Grid container direction={"column"} spacing={5} width={10}>
+        <Grid item>
+          <TextField id="email" label="email" variant="outlined" />
+        </Grid>
+        <Grid item>
+          <TextField id="password" type="password" label="password" variant="outlined" />
+        </Grid>
+        <Grid item>
+          <Button id="submit" type="submit">Submit</Button>
+        </Grid>
+        </Grid>
       </form>
     </>
   );
