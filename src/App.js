@@ -7,6 +7,7 @@ import LogIn from "./LogIn";
 import SignUp from "./SignUp";
 import Clock from "./Clock";
 import Footer from './Footer'
+import Todo from './components/Todo';
 import { AuthProvider } from "./Auth";
 import { Link } from "react-router-dom";
 
