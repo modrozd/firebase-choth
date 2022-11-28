@@ -7,7 +7,7 @@ body {
   background: linear-gradient(-45deg, grey, lightgrey, #23a6d5, grey);
   background-size: 400% 400%;
   height: 100vh;
-  color: blueviolet;
+  /*color: blueviolet;*/
   padding: 100px;
   font-family: Calibri;
   text-align: center;
@@ -19,7 +19,7 @@ nav {
   display: flex; /* 1 */
   justify-content: space-between; /* 2 */
   padding: 1rem 2rem; /* 3 */
-  background-color: rgb(235, 195, 64);
+  background-color: rgb(65, 65, 65);
 }
 
 nav ul {
@@ -31,33 +31,12 @@ nav li {
   padding-left: 1rem; /* 7! */
 }
 
-#clock {
-  font-size: 50px;
-}
-
-#submit {
-  font-size: 25px;
-  color: blueviolet;
-  font-family: Calibri;
-  background-color: rgb(235, 195, 64);
-  border-radius: 20px;
-  margin: 20px;
-}
-
-#submit:hover {
-  background-color: rgb(235, 150, 64);
-}
-
-.footer{
+.footer {
   margin-top: 1rem;
-  padding: 1rem;
-  background-color: rgb(235, 195, 64);
+  padding: 0.5rem;
+  background-color: rgb(27, 94, 211);
   position: fixed;
   bottom: 0;
   left: 0;
   width: 100%;
-}
-
-Button {
-  font-family: Calibri;
 }

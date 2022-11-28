@@ -1,65 +1,109 @@
-import React, { useContext } from "react";
-import { Navigate } from "react-router-dom";
-import { AuthContext } from "./Auth";
-import firebaseConfig from "./firebase.js";
-import Button from '@mui/material/Button';
-import Grid from "@material-ui/core/Grid";
-import Todo from './components/Todo';
-import {useState} from 'react';
-import {TextField} from '@mui/material';
+import React from "react";
+import { useState, useEffect } from "react";
+import { makeStyles } from "@material-ui/core";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import Box from "@material-ui/core/Box";
 
-/*const Dashboard = () => {
-  const { currentUser } = useContext(AuthContext);
-  if (!currentUser) {
-    return <Navigate to="/login" />;
+const useStyles = makeStyles({
+  field: {
+    "&&": {
+      marginTop: "20px",
+      marginBottom: "10px",
+    },
+  },
+  todolist: {
+    fontFamily: "Monospace",
+  },
+  todo_box: {
+    fontFamily: "Monospace",
+    display: "block",
+  },
+});
+
+export default function Dashboard() {
+  const classes = useStyles();
+
+  const [todos, setTodos] = useState(() => {
+    const savedTodos = localStorage.getItem("todos");
+    if (savedTodos) {
+      return JSON.parse(savedTodos);
+    } else {
+      return [];
+    }
+  });
+  const [todo, setTodo] = useState("");
+
+  useEffect(() => {
+    fetch("http://127.0.0.1:8002/todo/TodoItem/*/regular", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "auth-token": localStorage.getItem("token"),
+      },
+    }).then((req) => req.json().then((data) => setTodos(data)));
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("todos", JSON.stringify(todos));
+  }, [todos]);
+
+  function handleInputChange(e) {
+    setTodo(e.target.value);
   }
-  return (
-  <div>
-  <p>This is the dashboard.</p>
-  <Grid container direction={"column"} spacing={5} width={10}>
-    <Grid item>
-      <Button id="submit" onClick={ () => console.log("jejeje")}>Functionality</Button>
-      <Button id="submit" onClick={() => firebaseConfig.auth().signOut()}>Sign out</Button>
-    </Grid>
-  </Grid>
-  </div>
-  );
-};
 
-export default Dashboard;*/
-const Dashboard = () => {
-  const { currentUser } = useContext(AuthContext);
-  const [todos,setTodos]=useState([
-  'My todo1',
-  'My todo2'
-  ]);
-  const [input, setInput]=useState('');const addTodo=(e)=>{
-  e.preventDefault();
-  setTodos([...todos,input]);
-  setInput('')
-  };
-  if (!currentUser) {
-    return <Navigate to="/login" />;
+  function handleFormSubmit(e) {
+    e.preventDefault();
+
+    fetch("http://127.0.0.1:8002/todo/TodoItem/regular", {
+      method: "POST",
+      body: JSON.stringify({ todoId: 1, name: todo.trim() }),
+      headers: {
+        "Content-Type": "application/json",
+        "auth-token": localStorage.getItem("token"),
+      },
+    });
   }
-  
-  return (
-  <div className="App">
-  <h2> TODO List App</h2>
-  <form>
-  <TextField id="outlined-basic" label="Make Todo" variant="outlined" style={{margin:"0px 5px"}} size="small" value={input}
-  onChange={e=>setInput(e.target.value)} />
-  <Grid container direction={"column"} spacing={5} width={10}>
-    <Grid item>
-      <Button variant="contained" color="primary" onClick={addTodo}  >Add Todo</Button>
-      <Button variant="contained" onClick={() => firebaseConfig.auth().signOut()}>Sign out</Button>
-    </Grid>
-  </Grid>
-  </form>
-  <ul>
-  {todos.map(todo => <Todo todo={todo} />)}
-  </ul>
-  </div>
-  );
-};
+  function handleDeleteClick(id) {
+    fetch(`http://127.0.0.1:8002/todo/TodoItem/"id"=='${id}'/regular`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        "auth-token": localStorage.getItem("token"),
+      },
+    });
+  }
 
-export default Dashboard;
+  return (
+    <div>
+      <form onSubmit={handleFormSubmit}>
+        <TextField
+          InputProps={{
+            className: classes.field,
+          }}
+          name="todo"
+          type="text"
+          placeholder="Create a new todo"
+          value={todo}
+          onChange={handleInputChange}
+        />
+      </form>
+
+      <ul className={classes.todolist}>
+        {todos.map((todo) => (
+          <div key={todo.id}>
+            <Box className={classes.todo_box}>
+              {todo.name}{" "}
+              <Button
+                variant="inherit"
+                onClick={() => handleDeleteClick(todo.id)}
+              >
+                X
+              </Button>
+            </Box>
+          </div>
+        ))}
+      </ul>
+    </div>
+  );
+}
